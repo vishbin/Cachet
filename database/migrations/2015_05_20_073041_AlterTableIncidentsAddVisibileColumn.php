@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Schema;
 
 class AlterTableIncidentsAddVisibileColumn extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -43,5 +42,4 @@ class AlterTableIncidentsAddVisibileColumn extends Migration
             $table->dropColumn('visible');
         });
     }
-
 }
