@@ -11,39 +11,26 @@
 
 namespace CachetHQ\Cachet\Http\Controllers\Api;
 
+use CachetHQ\Cachet\Models\Component;
 use CachetHQ\Cachet\Models\Tag;
-use CachetHQ\Cachet\Repositories\Component\ComponentRepository;
 use GrahamCampbell\Binput\Facades\Binput;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ComponentController extends AbstractApiController
 {
     /**
-     * The component repository instance.
-     *
-     * @var \CachetHQ\Cachet\Repositories\Component\ComponentRepository
-     */
-    protected $component;
-
-    /**
-     * Create a new component controller instance.
-     *
-     * @param \CachetHQ\Cachet\Repositories\Component\ComponentRepository $component
-     */
-    public function __construct(ComponentRepository $component)
-    {
-        $this->component = $component;
-    }
-
-    /**
      * Get all components.
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \CachetHQ\Cachet\Models\Component         $component
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getComponents(Request $request)
+    public function getComponents(Request $request, Component $component)
     {
-        $components = $this->component->paginate(Binput::get('per_page', 20));
+        $components = $component->paginate(Binput::get('per_page', 20));
 
         return $this->paginator($components, $request);
     }
@@ -51,83 +38,92 @@ class ComponentController extends AbstractApiController
     /**
      * Get a single component.
      *
-     * @param int $id
+     * @param \CachetHQ\Cachet\Models\Component $component
      *
      * @return \CachetHQ\Cachet\Models\Component
      */
-    public function getComponent($id)
+    public function getComponent(Component $component)
     {
-        return $this->item($this->component->findOrFail($id));
+        return $this->item($component);
     }
 
     /**
      * Create a new component.
      *
-     * @param \Illuminate\Contracts\Auth\Guard $auth
+     * @param \Illuminate\Contracts\Auth\Guard  $auth
+     * @param \CachetHQ\Cachet\Models\Component $component
      *
      * @return \CachetHQ\Cachet\Models\Component
      */
-    public function postComponents(Guard $auth)
+    public function postComponents(Guard $auth, Component $component)
     {
-        $component = $this->component->create(
-            $auth->user()->id,
-            Binput::except('tags')
-        );
+        $componentData = Binput::except('tags');
+        $componentData['user_id'] = $auth->user()->id;
 
-        if (Binput::has('tags')) {
-            // The component was added successfully, so now let's deal with the tags.
-            $tags = preg_split('/ ?, ?/', Binput::get('tags'));
+        $component = $component->create($componentData);
 
-            // For every tag, do we need to create it?
-            $componentTags = array_map(function ($taggable) use ($component) {
-                return Tag::firstOrCreate([
-                    'name' => $taggable,
-                ])->id;
-            }, $tags);
+        if ($component->isValid()) {
+            if (Binput::has('tags')) {
+                // The component was added successfully, so now let's deal with the tags.
+                $tags = preg_split('/ ?, ?/', Binput::get('tags'));
 
-            $component->tags()->sync($componentTags);
+                // For every tag, do we need to create it?
+                $componentTags = array_map(function ($taggable) use ($component) {
+                    return Tag::firstOrCreate([
+                        'name' => $taggable,
+                    ])->id;
+                }, $tags);
+
+                $component->tags()->sync($componentTags);
+            }
+
+            return $this->item($component);
         }
 
-        return $this->item($component);
+        throw new BadRequestHttpException();
     }
 
     /**
      * Update an existing component.
      *
-     * @param int $id
+     * @param \CachetHQ\Cachet\Models\Componet $component
      *
      * @return \CachetHQ\Cachet\Models\Component
      */
-    public function putComponent($id)
+    public function putComponent(Component $component)
     {
-        $component = $this->component->update($id, Binput::except('tags'));
+        $component->update(Binput::except('tags'));
 
-        if (Binput::has('tags')) {
-            $tags = preg_split('/ ?, ?/', Binput::get('tags'));
+        if ($component->isValid('updating')) {
+            if (Binput::has('tags')) {
+                $tags = preg_split('/ ?, ?/', Binput::get('tags'));
 
-            // For every tag, do we need to create it?
-            $componentTags = array_map(function ($taggable) use ($component) {
-                return Tag::firstOrCreate([
-                    'name' => $taggable,
-                ])->id;
-            }, $tags);
+                // For every tag, do we need to create it?
+                $componentTags = array_map(function ($taggable) use ($component) {
+                    return Tag::firstOrCreate([
+                        'name' => $taggable,
+                    ])->id;
+                }, $tags);
 
-            $component->tags()->sync($componentTags);
+                $component->tags()->sync($componentTags);
+            }
+
+            return $this->item($component);
         }
 
-        return $this->item($component);
+        throw new BadRequestHttpException();
     }
 
     /**
      * Delete an existing component.
      *
-     * @param int $id
+     * @param \CachetHQ\Cachet\Models\Component $component
      *
-     * @return \Dingo\Api\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteComponent($id)
+    public function deleteComponent(Component $component)
     {
-        $this->component->destroy($id);
+        $component->delete();
 
         return $this->noContent();
     }
