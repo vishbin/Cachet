@@ -64,7 +64,7 @@ return [
         'button'    => 'Subscribe',
         'email'     => [
             'subscribe'   => 'Subscribe to email updates.',
-            'subscribed'  => 'You\'ve been subscribed to email notifications.',
+            'subscribed'  => 'You\'ve been subscribed to email notifications, please check your email to confirm your subscription.',
             'verified'    => 'Your email subscription has been confirmed. Thank you!',
             'unsuscribe'  => 'Unsuscribe from email updates.',
             'unsuscribed' => 'Your email subscription has been cancelled,',
