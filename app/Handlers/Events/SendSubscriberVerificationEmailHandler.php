@@ -53,7 +53,7 @@ class SendSubscriberVerificationEmailHandler implements ShouldBeQueued
         $mail = [
             'email'   => $subscriber->email,
             'subject' => 'Confirm your subscription.',
-            'link'    => route('subscribe-verify', $subscriber->verify_code),
+            'link'    => route('subscribe-verify', ['code' => $subscriber->verify_code]),
         ];
 
         $this->mailer->send([

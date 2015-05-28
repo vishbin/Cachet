@@ -1,17 +1,16 @@
-<html>
-<head>
-    <title>{{ Setting::get('app_name') }}</title>
-</head>
-<body>
-    <p>Plase confirm your subscription to {{ Setting::get('app_name') }}.</p>
+@extends('layout.emails')
 
-    <p>{{ $link }}</p>
+@section('preheader')
+Plase confirm your subscription to {{ Setting::get('app_name') }}
+@stop
 
-    Thank you,
-    <br />
-    {{ Setting::get('app_name') }}
+@section('content')
+    <p>Please confirm your subscription by visiting {{ $link }}</p>
+
+    <p>Thank you,</p>
+    <p>{{ Setting::get('app_name') }} Status</p>
+
     @if(Setting::get('show_support'))
     <p>{!! trans('cachet.powered_by', ['app' => Setting::get('app_name')]) !!}</p>
     @endif
-</body>
-</html>
+@stop

@@ -4,7 +4,7 @@
     <meta charset="utf-8"> <!-- utf-8 works for most cases -->
     <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
-    <title>CachetHQ</title> <!-- the <title> tag shows on email notifications on Android 4.4. -->
+    <title>{{ Setting::get('app_name') }} Status</title> <!-- the <title> tag shows on email notifications on Android 4.4. -->
     <style type="text/css">
 
         /* ensure that clients don't add any padding or spaces around the email design and allow us to style emails for the entire width of the preview pane */
@@ -107,7 +107,7 @@
             <td>
                 <!-- Hidden Preheader Text : BEGIN -->
                 <div style="display:none; visibility:hidden; opacity:0; color:transparent; height:0; width:0;line-height:0; overflow:hidden;mso-hide: all;">
-                    Visually hidden preheader text.
+                    @yield('preheader')
                 </div>
                 <!-- Hidden Preheader Text : END -->
 
@@ -148,16 +148,6 @@
                                         </table>
                                     </td>
                                 </tr>
-
-                                <!-- Footer : BEGIN -->
-                                <tr>
-                                    <td style="text-align: center;padding: 40px 0;font-family: sans-serif; font-size: 12px; line-height: 18px;color: #888888;">
-                                        If you no longer wish to receive these emails, you can <unsubscribe style="color: #444444; padding: 0;text-decoration: underline">unsubscribe</unsubscribe>.<br>
-                                        Company Name &bull; 123 Fake Street, SpringField, Oregon 97477 US &bull; <span class="mobile_link">(123) 456-7890</span><br><br>
-                                    </td>
-                                </tr>
-                                <!-- Footer : END -->
-
                             </table>
                             <!-- Email wrapper : END -->
 
