@@ -67,7 +67,7 @@ return [
             'subscribed'  => 'You\'ve been subscribed to email notifications.',
             'verified'    => 'Your email subscription has been confirmed. Thank you!',
             'unsuscribe'  => 'Unsuscribe from email updates.',
-            'unsuscribed' => 'Your email subscription has been canceled,',
+            'unsuscribed' => 'Your email subscription has been cancelled,',
             'failure'     => 'Something went wrong with the subscription.',
         ],
     ],
