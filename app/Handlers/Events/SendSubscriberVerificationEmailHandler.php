@@ -12,16 +12,15 @@
 namespace CachetHQ\Cachet\Handlers\Events;
 
 use CachetHQ\Cachet\Events\CustomerHasSubscribedEvent;
-use Illuminate\Contracts\Mail\Mailer;
-use Illuminate\Contracts\Queue\ShouldBeQueued;
+use Illuminate\Contracts\Mail\MailQueue;
 use Illuminate\Mail\Message;
 
-class SendSubscriberVerificationEmailHandler implements ShouldBeQueued
+class SendSubscriberVerificationEmailHandler
 {
     /**
      * The mailer instance.
      *
-     * @var \Illuminate\Contracts\Mail\Mailer
+     * @var \Illuminate\Contracts\Mail\MailQueue
      */
     protected $mailer;
 
@@ -38,7 +37,7 @@ class SendSubscriberVerificationEmailHandler implements ShouldBeQueued
     }
 
     /**
-     * Handle the customer has subscribed event.
+     * Handle the event.
      *
      * @param \CachetHQ\Cachet\Events\CustomerHasSubscribedEvent $event
      *
@@ -46,15 +45,13 @@ class SendSubscriberVerificationEmailHandler implements ShouldBeQueued
      */
     public function handle(CustomerHasSubscribedEvent $event)
     {
-        $subscriber = $event->getSubscriber();
-
         $mail = [
-            'email'   => $subscriber->email,
+            'email'   => $event->subscriber->email,
             'subject' => 'Confirm your subscription.',
-            'link'    => route('subscribe-verify', ['code' => $subscriber->verify_code]),
+            'link'    => route('subscribe-verify', ['code' => $event->subscriber->verify_code]),
         ];
 
-        $this->mailer->send([
+        $this->mailer->queue([
             'html' => 'emails.subscribers.verify-html',
             'text' => 'emails.subscribers.verify-text',
         ], $mail, function (Message $message) use ($mail) {

@@ -12,18 +12,15 @@
 namespace CachetHQ\Cachet\Events;
 
 use CachetHQ\Cachet\Models\Subscriber;
-use Illuminate\Queue\SerializesModels;
 
-class CustomerHasSubscribedEvent extends AbstractEvent
+class CustomerHasSubscribedEvent
 {
-    use SerializesModels;
-
     /**
      * The customer who has subscribed.
      *
      * @var \CachetHQ\Cachet\Models\Subscriber
      */
-    protected $subscriber;
+    public $subscriber;
 
     /**
      * Create a new customer has subscribed event instance.
@@ -33,15 +30,5 @@ class CustomerHasSubscribedEvent extends AbstractEvent
     public function __construct(Subscriber $subscriber)
     {
         $this->subscriber = $subscriber;
-    }
-
-    /**
-     * Get the customer who has subscribed.
-     *
-     * @var \CachetHQ\Cachet\Models\Subscriber
-     */
-    public function getSubscriber()
-    {
-        return $this->subscriber;
     }
 }

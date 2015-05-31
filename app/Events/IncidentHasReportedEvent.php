@@ -12,18 +12,15 @@
 namespace CachetHQ\Cachet\Events;
 
 use CachetHQ\Cachet\Models\Incident;
-use Illuminate\Queue\SerializesModels;
 
-class IncidentHasReportedEvent extends AbstractEvent
+class IncidentHasReportedEvent
 {
-    use SerializesModels;
-
     /**
      * The incident that has been reported.
      *
      * @var \CachetHQ\Cachet\Models\Incident
      */
-    protected $incident;
+    public $incident;
 
     /**
      * Create a new incident has reported event instance.
@@ -33,15 +30,5 @@ class IncidentHasReportedEvent extends AbstractEvent
     public function __construct(Incident $incident)
     {
         $this->incident = $incident;
-    }
-
-    /**
-     * Get the incident reported.
-     *
-     * @var \CachetHQ\Cachet\Models\Incident
-     */
-    public function getIncident()
-    {
-        return $this->incident;
     }
 }

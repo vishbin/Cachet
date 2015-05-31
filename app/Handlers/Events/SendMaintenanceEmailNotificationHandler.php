@@ -12,16 +12,15 @@
 namespace CachetHQ\Cachet\Handlers\Events;
 
 use CachetHQ\Cachet\Events\MaintenanceHasReportedEvent;
-use Illuminate\Contracts\Mail\Mailer;
-use Illuminate\Contracts\Queue\ShouldBeQueued;
+use Illuminate\Contracts\Mail\MailQueue;
 use Illuminate\Mail\Message;
 
-class SendMaintenanceEmailNotificationHandler implements ShouldBeQueued
+class SendMaintenanceEmailNotificationHandler
 {
     /**
      * The mailer instance.
      *
-     * @var \Illuminate\Contracts\Mail\Mailer
+     * @var \Illuminate\Contracts\Mail\MailQueue
      */
     protected $mailer;
 
@@ -39,7 +38,7 @@ class SendMaintenanceEmailNotificationHandler implements ShouldBeQueued
     }
 
     /**
-     * Handle the maintenance has scheduled event.
+     * Handle the event.
      *
      * @param \CachetHQ\Cachet\Events\MaintenanceHasReportedEvent $event
      *
@@ -47,15 +46,13 @@ class SendMaintenanceEmailNotificationHandler implements ShouldBeQueued
      */
     public function handle(MaintenanceHasReportedEvent $event)
     {
-        $incident = $event->getIncident();
-
         foreach ($this->subscriber->all() as $subscriber) {
             $mail = [
                 'email'   => $subscriber->email,
                 'subject' => 'Scheduled maintenance.',
             ];
 
-            $this->mailer->send([
+            $this->mailer->queue([
                 'html' => 'emails.incidents.maintenance-html',
                 'text' => 'emails.incidents.maintenance-text',
             ], $mail, function (Message $message) use ($mail) {

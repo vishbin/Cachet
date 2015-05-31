@@ -12,11 +12,10 @@
 namespace CachetHQ\Cachet\Handlers\Events;
 
 use CachetHQ\Cachet\Events\IncidentHasReportedEvent;
-use Illuminate\Contracts\Mail\Mailer;
-use Illuminate\Contracts\Queue\ShouldBeQueued;
+use Illuminate\Contracts\Mail\MailQueue;
 use Illuminate\Mail\Message;
 
-class SendIncidentEmailNotificationHandler implements ShouldBeQueued
+class SendIncidentEmailNotificationHandler
 {
     /**
      * The mailer instance.
@@ -39,7 +38,7 @@ class SendIncidentEmailNotificationHandler implements ShouldBeQueued
     }
 
     /**
-     * Handle the incident has reported event.
+     * Handle the event.
      *
      * @param \CachetHQ\Cachet\Events\IncidentHasReportedEvent $event
      *
@@ -47,15 +46,13 @@ class SendIncidentEmailNotificationHandler implements ShouldBeQueued
      */
     public function handle(IncidentHasReportedEvent $event)
     {
-        $incident = $event->getIncident();
-
         foreach ($this->subscriber->all() as $subscriber) {
             $mail = [
                 'email'   => $subscriber->email,
                 'subject' => 'New incident reported.',
             ];
 
-            $this->mailer->send([
+            $this->mailer->queue([
                 'html' => 'emails.incidents.new-html',
                 'text' => 'emails.incidents.new-text',
             ], $mail, function (Message $message) use ($mail) {
