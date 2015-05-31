@@ -14,7 +14,7 @@ namespace CachetHQ\Cachet\Events;
 use CachetHQ\Cachet\Models\Incident;
 use Illuminate\Queue\SerializesModels;
 
-class MaintenanceHasReportedEvent extends AbstractEvent
+class MaintenanceHasScheduledEvent extends AbstractEvent
 {
     use SerializesModels;
 
