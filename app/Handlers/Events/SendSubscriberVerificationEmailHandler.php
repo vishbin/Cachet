@@ -31,7 +31,7 @@ class SendSubscriberVerificationEmailHandler
      *
      * @return void
      */
-    public function __construct(Mailer $mailer)
+    public function __construct(MailQueue $mailer)
     {
         $this->mailer = $mailer;
     }

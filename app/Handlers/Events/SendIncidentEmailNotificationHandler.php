@@ -31,7 +31,7 @@ class SendIncidentEmailNotificationHandler
      *
      * @return void
      */
-    public function __construct(Mailer $mailer, Subscriber $subscriber)
+    public function __construct(MailQueue $mailer, Subscriber $subscriber)
     {
         $this->mailer = $mailer;
         $this->subscriber = $subscriber;
